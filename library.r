@@ -21,6 +21,9 @@
 # at the beginning of your code so it remains runnable for those who do not
 # have this command (of course, they would have to manually install the
 # packages first if they are not already installed).
+#
+# Note that if you run rm(list=ls()) to clear your workspace, this will also
+# remove the function below from your workspace.
 
 library <- function(...) {
    ### install.packages() gives a warning if it fails; upgrade warnings to errors so try() works as intended
