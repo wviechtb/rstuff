@@ -30,38 +30,35 @@
 .rstuff <- new.env()
 
 .rstuff$library <- function(...) {
-   # install.packages() gives a warning if it fails; upgrade warnings to errors so try() works as intended
-   wopt <- options(warn=2)
-   on.exit(options(warn=wopt$warn)) # on exit, set 'warn' back to previous setting
    pkgs <- as.character(substitute(list(...)))[-1L] # -1L to remove 'list'
-   apkgs <- .packages()
-   cat("\n")
+   apkgs <- .packages() # get attached packages
+   message("")
    for (i in seq_along(pkgs)) {
-      cat("********************", pkgs[i], "********************\n")
+      message("******************** ", pkgs[i], " ********************")
       if (pkgs[i] %in% apkgs) {
-         cat("Package is already loaded.\n")
+         message("Package is already loaded.")
       } else {
-         cat("Trying to load package ...\n")
+         message("Trying to load package ...")
          if (!suppressWarnings(require(pkgs[i], quietly=TRUE, character.only=TRUE))) {
-            cat("Package not installed.\n")
-            cat("Trying to install it ...\n")
-            z <- try(install.packages(pkgs[i]), silent=TRUE)
-            if (!inherits(z, "try-error")) {
-               cat("Package successfully installed.\n")
-               cat("Now trying again to load package ...\n")
+            message("Package not installed.")
+            message("Trying to install it ...")
+            inst <- tryCatch(install.packages(pkgs[i]), warning = function(w) return(w), error = function(e) return(e))
+            if (!inherits(inst, c("error", "warning"))) {
+               message("Package successfully installed.")
+               message("Now trying again to load package ...")
                if (suppressWarnings(require(pkgs[i], quietly=TRUE, character.only=TRUE))) {
-                  cat("Package successfully loaded.\n")
+                  message("Package successfully loaded.")
                } else {
-                  cat("Package loading not successful.\n")
+                  warning("Loading package '", pkgs[i], "' not successful.", call.=FALSE, immediate.=TRUE)
                }
             } else {
-               cat("Could not install package :( \n")
+               warning("Could not install package '", pkgs[i], "'.", call.=FALSE, immediate.=TRUE)
             }
          } else {
-            cat("Package successfully loaded.\n")
+            message("Package successfully loaded.")
          }
       }
-      cat("\n")
+      message("")
    }
 }
 
