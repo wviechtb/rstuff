@@ -36,18 +36,18 @@
    for (i in seq_along(pkgs)) {
       message("******************** ", pkgs[i], " ********************")
       if (pkgs[i] %in% apkgs) {
-         message("Package is already loaded.")
+         message("** Package is already loaded.")
       } else {
-         message("Trying to load package ...")
+         message("** Trying to load package ...")
          if (!suppressWarnings(require(pkgs[i], quietly=TRUE, character.only=TRUE))) {
-            message("Package not installed.")
-            message("Trying to install it ...")
+            message("** Package not installed.")
+            message("** Trying to install it ...")
             inst <- tryCatch(install.packages(pkgs[i]), warning = function(w) return(w), error = function(e) return(e))
             if (!inherits(inst, c("error", "warning"))) {
-               message("Package successfully installed.")
-               message("Now trying again to load package ...")
+               message("** Package successfully installed.")
+               message("** Now trying again to load package ...")
                if (suppressWarnings(require(pkgs[i], quietly=TRUE, character.only=TRUE))) {
-                  message("Package successfully loaded.")
+                  message("** Package successfully loaded.")
                } else {
                   warning("Loading package '", pkgs[i], "' not successful.", call.=FALSE, immediate.=TRUE)
                }
@@ -55,7 +55,7 @@
                warning("Could not install package '", pkgs[i], "'.", call.=FALSE, immediate.=TRUE)
             }
          } else {
-            message("Package successfully loaded.")
+            message("** Package successfully loaded.")
          }
       }
       message("")
